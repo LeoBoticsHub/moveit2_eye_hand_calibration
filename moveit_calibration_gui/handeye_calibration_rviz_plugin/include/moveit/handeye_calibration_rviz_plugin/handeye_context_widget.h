@@ -50,7 +50,7 @@
 // ros
 #include <shape_msgs/msg/mesh.hpp>
 #include <rviz_common/frame_manager_iface.hpp>
-#include <tf2_eigen/tf2_eigen.h>
+#include <tf2_eigen/tf2_eigen.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <tf2_ros/transform_listener.h>
 #include <rviz_visual_tools/tf_visual_tools.hpp>
@@ -92,7 +92,7 @@ class TFFrameNameComboBox : public QComboBox
 public:
   TFFrameNameComboBox(rviz_common::DisplayContext* context, rclcpp::Node::SharedPtr& node,
                       FRAME_SOURCE source = ROBOT_FRAME, QWidget* parent = 0)
-    : QComboBox(parent), frame_source_(source), context_(context), node_(node)
+    : QComboBox(parent), frame_source_(source), node_(node), context_(context)
   {
     robot_model_loader_.reset(new robot_model_loader::RobotModelLoader(node_, "robot_description"));
   }

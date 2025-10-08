@@ -39,7 +39,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <opencv2/core/core.hpp>
-#include <tf2_eigen/tf2_eigen.h>
+#include <tf2_eigen/tf2_eigen.hpp>
 #include <sensor_msgs/msg/camera_info.hpp>
 #include <pluginlib/class_loader.hpp>
 #include <geometry_msgs/msg/transform_stamped.hpp>
@@ -110,7 +110,7 @@ TEST_F(MoveItHandEyeTargetTester, InitOK)
 TEST_F(MoveItHandEyeTargetTester, DetectArucoMarkerPose)
 {
   // Set camera intrinsic parameters
-  sensor_msgs::msg::CameraInfo::Ptr camera_info(new sensor_msgs::msg::CameraInfo());
+  sensor_msgs::msg::CameraInfo::SharedPtr camera_info(new sensor_msgs::msg::CameraInfo());
   camera_info->height = 480;
   camera_info->width = 640;
   camera_info->header.frame_id = "camera_color_optical_frame";

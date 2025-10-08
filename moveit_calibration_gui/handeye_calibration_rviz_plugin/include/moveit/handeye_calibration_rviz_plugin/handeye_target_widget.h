@@ -89,7 +89,7 @@ class RosTopicComboBox : public QComboBox
 {
   Q_OBJECT
 public:
-  explicit RosTopicComboBox(rclcpp::Node::SharedPtr node, QWidget* parent = Q_NULLPTR) : node_(node), QComboBox(parent)
+  explicit RosTopicComboBox(rclcpp::Node::SharedPtr node, QWidget* parent = Q_NULLPTR) : QComboBox(parent), node_(node)
   {
   }
   ~RosTopicComboBox() = default;
@@ -97,7 +97,7 @@ public:
   void addMsgsFilterType(QString msgs_type);
 
   bool hasTopic(const QString& topic_name);
-
+    
   bool getFilteredTopics();
 
 protected:
@@ -192,7 +192,7 @@ private:
 
   std::string optical_frame_;
 
-  sensor_msgs::msg::CameraInfo::ConstPtr camera_info_;
+  sensor_msgs::msg::CameraInfo::ConstSharedPtr camera_info_;
 
   // **************************************************************
   // Ros components
