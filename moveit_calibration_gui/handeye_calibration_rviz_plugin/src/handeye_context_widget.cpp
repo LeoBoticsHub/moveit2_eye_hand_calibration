@@ -39,7 +39,7 @@
 
 namespace moveit_rviz_plugin
 {
-void TFFrameNameComboBox::mousePressEvent(QMouseEvent* /*event*/)
+void TFFrameNameComboBox::mousePressEvent(QMouseEvent* event)
 {
   context_->getFrameManager()->update();
   std::vector<std::string> names = context_->getFrameManager()->getAllFrameNames();
@@ -67,7 +67,7 @@ void TFFrameNameComboBox::mousePressEvent(QMouseEvent* /*event*/)
           addItem(QString(name.c_str()));
     }
   }
-  showPopup();
+  QComboBox::mousePressEvent(event);
 }
 
 bool TFFrameNameComboBox::hasFrame(const std::string& frame_name)
@@ -198,12 +198,21 @@ ContextTabWidget::ContextTabWidget(rclcpp::Node::SharedPtr node, HandEyeCalibrat
   frames_.insert(std::make_pair("base", new TFFrameNameComboBox(context_, node_, ROBOT_FRAME)));
   frame_layout->addRow("Robot base frame:", frames_["base"]);
 
-  for (std::pair<const std::string, TFFrameNameComboBox*>& frame : frames_)
-    connect(frame.second, SIGNAL(activated(int)), this, SLOT(updateFrameName(int)));
+  // set expanding policy to the qcombo boxes
+  for (std::pair<const std::string, TFFrameNameComboBox*>& frame_map : frames_) {
+
+    QSizePolicy policy = frame_map.second->sizePolicy();
+    policy.setHorizontalPolicy(QSizePolicy::Expanding);
+    frame_map.second->setSizePolicy(policy);
+
+    // connect signal
+    connect(frame_map.second, SIGNAL(activated(int)), this, SLOT(updateFrameName(int)));
+  }
 
   // Camera Pose initial guess area
   QGroupBox* pose_group = new QGroupBox("Camera Pose Initial Guess", this);
   pose_group->setMinimumWidth(300);
+  pose_group->setMaximumWidth(400);
   layout_right->addWidget(pose_group);
   QFormLayout* pose_layout = new QFormLayout();
   pose_group->setLayout(pose_layout);

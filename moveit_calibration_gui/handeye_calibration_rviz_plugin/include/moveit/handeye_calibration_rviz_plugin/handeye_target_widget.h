@@ -170,6 +170,7 @@ private:
 
   // Target params
   QFormLayout* target_param_layout_;
+  QFormLayout* target_pose_detection_layout_;
   QComboBox* target_type_;
   std::vector<moveit_handeye_calibration::HandEyeTargetBase::Parameter> target_plugin_params_;
   std::map<std::string, QWidget*> target_param_inputs_;

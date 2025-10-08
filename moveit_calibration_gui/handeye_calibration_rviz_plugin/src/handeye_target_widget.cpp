@@ -75,16 +75,18 @@ bool RosTopicComboBox::getFilteredTopics()
   return !image_topics_.isEmpty();
 }
 
-void RosTopicComboBox::mousePressEvent(QMouseEvent* /*event*/)
+void RosTopicComboBox::mousePressEvent(QMouseEvent* event)
 {
   getFilteredTopics();
-  showPopup();
+  //showPopup();
+  QComboBox::mousePressEvent(event); 
 }
 
 TargetTabWidget::TargetTabWidget(rclcpp::Node::SharedPtr node, HandEyeCalibrationDisplay* pdisplay, QWidget* parent)
   : QWidget(parent) 
   , calibration_display_(pdisplay)
   , target_param_layout_(new QFormLayout())
+  , target_pose_detection_layout_(new QFormLayout())
   , node_(node)
   , target_plugins_loader_(nullptr)
   , target_(nullptr)
@@ -110,12 +112,18 @@ TargetTabWidget::TargetTabWidget(rclcpp::Node::SharedPtr node, HandEyeCalibratio
   // Target 3D pose recognition area
   QGroupBox* group_left_bottom = new QGroupBox("Target Pose Detection", this);
   layout_left->addWidget(group_left_bottom);
-  QFormLayout* layout_left_bottom = new QFormLayout();
-  group_left_bottom->setLayout(layout_left_bottom);
+  //QFormLayout* layout_left_bottom = new QFormLayout();
+  group_left_bottom->setLayout(target_pose_detection_layout_);
 
   ros_topics_.insert(std::make_pair("image_topic", new RosTopicComboBox(node_, this)));
   ros_topics_["image_topic"]->addMsgsFilterType("sensor_msgs/msg/Image");
-  layout_left_bottom->addRow("Camera Image Topic", ros_topics_["image_topic"]);
+
+  // set resizable text field
+  QSizePolicy policy = ros_topics_["image_topic"]->sizePolicy();
+  policy.setHorizontalPolicy(QSizePolicy::Expanding);
+  ros_topics_["image_topic"]->setSizePolicy(policy);
+
+  target_pose_detection_layout_->addRow("Camera Image Topic", ros_topics_["image_topic"]);
   connect(ros_topics_["image_topic"], SIGNAL(activated(const QString&)), this,
           SLOT(imageTopicComboboxChanged(const QString&)));
 
