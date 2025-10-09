@@ -126,13 +126,15 @@ public:
   const std::size_t CAMERA_MATRIX_VECTOR_DIMENSION = 9;  // 3x3 camera intrinsic matrix
   const std::size_t CAMERA_MATRIX_WIDTH = 3;
   const std::size_t CAMERA_MATRIX_HEIGHT = 3;
-  const std::size_t CAMERA_DISTORTION_VECTOR_DIMENSION = 5;  // distortion parameters (k1, k2, t1, t2, k3)
+  const std::size_t CAMERA_DISTORTION_PLUMB_BOB_VECTOR_DIM = 5;  // distortion parameters (k1, k2, t1, t2, k3)
+  const std::size_t CAMERA_DISTORTION_RATIONAL_VECTOR_DIM = 8;    // distortion parameters (k1, k2, t1, t2, k3, k4, k5, k6)
 
   virtual ~HandEyeTargetBase() = default;
   HandEyeTargetBase()
   {
     camera_matrix_ = cv::Mat::eye(3, 3, CV_64F);
-    distortion_coeffs_ = cv::Mat::zeros(5, 1, CV_64F);
+    // rational model is unsupported now
+    distortion_coeffs_ = cv::Mat::zeros(CAMERA_DISTORTION_PLUMB_BOB_VECTOR_DIM, 1, CV_64F);
   }
 
   /**
@@ -238,11 +240,23 @@ public:
       return false;
     }
 
-    if (msg->d.size() != CAMERA_DISTORTION_VECTOR_DIMENSION)
+    if (msg->distortion_model == "rational_polynomial")
+    {
+      RCLCPP_WARN(LOGGER_CALIBRATION_TARGET,
+                  "Rational polynomial distortion model has %zu parameters, but only the first %zu parameters will be used (Plumb Bob model).",
+                  msg->d.size(), CAMERA_DISTORTION_PLUMB_BOB_VECTOR_DIM);
+    }
+    else if (msg->distortion_model != "plumb_bob")
+    {
+      RCLCPP_ERROR(LOGGER_CALIBRATION_TARGET, "Unsupported distortion model: %s", msg->distortion_model.c_str());
+      return false;
+    }
+
+    if (msg->d.size() < CAMERA_DISTORTION_PLUMB_BOB_VECTOR_DIM)
     {
       RCLCPP_ERROR(LOGGER_CALIBRATION_TARGET,
-                   "Invalid distortion parameters dimension, current is %ld, required is %zu.", msg->d.size(),
-                   CAMERA_DISTORTION_VECTOR_DIMENSION);
+                   "Invalid distortion parameters dimension, current is %ld, minimum required is %zu.", msg->d.size(),
+                   CAMERA_DISTORTION_PLUMB_BOB_VECTOR_DIM);
       return false;
     }
 
@@ -258,7 +272,7 @@ public:
     }
 
     // Store camera distortion info
-    for (size_t i = 0; i < CAMERA_DISTORTION_VECTOR_DIMENSION; i++)
+    for (size_t i = 0; i < CAMERA_DISTORTION_PLUMB_BOB_VECTOR_DIM; i++)
     {
       distortion_coeffs_.at<double>(i, 0) = msg->d[i];
     }

@@ -469,7 +469,7 @@ void TargetTabWidget::cameraInfoCallback(sensor_msgs::msg::CameraInfo::ConstShar
   {
     if (target_ && msg->height > 0 && msg->width > 0 && !msg->k.empty() && !msg->d.empty())
     {
-      RCLCPP_DEBUG(node_->get_logger(), "Received camera info.");
+      RCLCPP_INFO(node_->get_logger(), "Received camera info.");
       camera_info_ = msg;
       target_->setCameraIntrinsicParams(camera_info_);
       Q_EMIT cameraInfoChanged(*camera_info_);
