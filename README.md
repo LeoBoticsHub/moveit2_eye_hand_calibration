@@ -12,8 +12,3 @@ repository. For background, see this [Github discussion](https://github.com/ros-
 
 For examples, please follow [Hand-Eye Calibration tutorial](tutorial.md)
 
-## GitHub Actions - Continuous Integration
-
-[![Format](https://github.com/ros-planning/moveit_calibration/actions/workflows/format.yaml/badge.svg?branch=ros2)](https://github.com/ros-planning/moveit_calibration/actions/workflows/format.yaml?branch=ros2)
-[![BuildAndTest](https://github.com/ros-planning/moveit_calibration/actions/workflows/ci.yaml/badge.svg?branch=ros2)](https://github.com/ros-planning/moveit_calibration/actions/workflows/ci.yaml?branch=ros2)
-[![codecov](https://codecov.io/gh/ros-planning/moveit_calibration/branch/ros2/graph/badge.svg?token=W7uHKcY0ly)](https://codecov.io/gh/ros-planning/moveit_calibration)
